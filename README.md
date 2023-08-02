@@ -1,1 +1,5 @@
-# petConnect
+# PetConnect - Conexões que Salvam
+
+A preocupação crescente com o número cada vez maior de animais desabrigados e em situação de vulnerabilidade em conjunto com a busca pelo bem estar destes animais, fez com que surgisse a PetConnect, que visa se tornar uma alternativa positiva e solidária para auxiliar as instituições na divulgação dos animais visando facilitar o processo de  adoção.
+
+O PetConnect trata-se de um sistema que possui como objetivo principal criar uma conexão afetiva e duradoura entre animais resgatados ou abandonados a potenciais adotantes que possuem interesse em compartilhar um lar amoroso com esses animais. O sistema visa facilitar o processo de adoção, tornando mais acessível e seguro, atuando como intermediador entre as organizações filantrópicas que resgatam e cuidam dos animais, com a população que busca realizar uma adoção responsável. Através de uma interface amigável e intuitiva, potenciais adotantes podem explorar as informações dos animais disponíveis para adoção, conhecendo suas histórias, personalidades e necessidades especiais, caso tenham alguma.
