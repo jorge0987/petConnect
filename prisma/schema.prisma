@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id            String    @id @default(uuid())
+  tipo_usuario  String
+  nome          String
+  endereco      String?
+  cnpj          String?   @unique
+  contato       String
+  historico     String?
+  email         String    @unique
+  senha         String
+}
+
+model animal {
+  id            String  @id @default(uuid())
+  especie       String
+  raca          String
+  idade         String
+  tamanho       String
+  sexo          String
+  descricao     String
+  personalidade String
+}
