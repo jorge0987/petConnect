@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id            String    @id @default(uuid())
   tipo_usuario  String
   nome          String
@@ -16,10 +16,12 @@ model user {
   contato       String
   historico     String?
   email         String    @unique
-  senha         String
+  senha         String  
+  interesse     Interesse[]
+  animal        Animal[]
 }
 
-model animal {
+model Animal {
   id            String    @id @default(uuid())
   especie       String
   raca          String
@@ -29,12 +31,24 @@ model animal {
   descricao     String
   personalidade String
   adotado       Boolean
-  foto          foto[]
+  fotos         foto[]
+  interesse     Interesse[]
+  user          User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+  
 }
 
 model foto {
   id            String    @unique  @id @default(uuid())
-  arquivo       Bytes     
-  animal        animal?   @relation(fields: [animal_id], references: [id], onDelete: Cascade)
+  arquivo       String     
+  animal        Animal   @relation(fields: [animal_id], references: [id], onDelete: Cascade)
+  animal_id     String
+}
+
+model Interesse {
+  id            String    @unique  @id @default(uuid())
+  user          User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id       String
+  animal        Animal?   @relation(fields: [animal_id], references: [id], onDelete: Cascade)
   animal_id     String
 }
