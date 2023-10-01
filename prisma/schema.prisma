@@ -20,7 +20,7 @@ model user {
 }
 
 model animal {
-  id            String  @id @default(uuid())
+  id            String    @id @default(uuid())
   especie       String
   raca          String
   idade         String
@@ -28,4 +28,13 @@ model animal {
   sexo          String
   descricao     String
   personalidade String
+  adotado       Boolean
+  foto          foto[]
+}
+
+model foto {
+  id            String    @unique  @id @default(uuid())
+  arquivo       Bytes     
+  animal        animal?   @relation(fields: [animal_id], references: [id], onDelete: Cascade)
+  animal_id     String
 }
