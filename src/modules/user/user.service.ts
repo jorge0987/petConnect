@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/database/PrismaService';
-import * as bcrypt from 'bcrypt';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { PrismaService } from "src/database/PrismaService";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class UserService {
@@ -14,7 +14,7 @@ export class UserService {
 
     if (await this.showUserByEmail(user.email)) {
       throw new HttpException(
-        'Já existe um cadastro com este e-mail!',
+        "Já existe um cadastro com este e-mail!",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -23,34 +23,35 @@ export class UserService {
     if (!data.endereco) delete data.endereco;
     if (!data.historico) delete data.historico;
 
-    if (data.tipo_usuario === '2') {
+    if (data.tipo_usuario === "2") {
       if (!data.cnpj) {
         throw new HttpException(
-          'Informe o CNPJ da instituição!',
+          "Informe o CNPJ da instituição!",
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       } else {
         if (await this.showUserByCNPJ(user.cnpj)) {
           throw new HttpException(
-            'Já existe uma Instituição com este CNPJ!',
+            "Já existe uma Instituição com este CNPJ!",
             HttpStatus.INTERNAL_SERVER_ERROR,
           );
         }
       }
     }
+    let userModel = null;
 
     try {
-      await this.prisma.user.create({ data });
+      userModel = await this.prisma.user.create({ data });
     } catch (e) {
       console.log(e);
 
       throw new HttpException(
-        'Falha ao Cadastrar',
+        "Falha ao Cadastrar",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    return true;
+    return userModel;
   }
 
   async show(id: string) {
@@ -89,5 +90,18 @@ export class UserService {
         tipo_usuario: type,
       },
     });
+  }
+
+  async interesse(id: string, animal_id: string) {
+    try {
+      return await this.prisma.interesse.create({
+        data: { user_id: id, animal_id },
+      });
+    } catch (e) {
+      throw new HttpException(
+        "Falha ao Cadastrar",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

@@ -26,4 +26,12 @@ export class UserController {
   async findAll(@Param('tipo') tipo: string) {
     return await this.user.findAllByType(tipo);
   }
+
+  @Get('interesse/:id/:animal_id')
+  async interesse(
+    @Param('id') id: string,
+    @Param('animal_id') animal_id: string,
+  ) {
+    return await this.user.interesse(id, animal_id);
+  }
 }
