@@ -7,9 +7,10 @@ import {
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthMiddleware } from './middleware/auth.middleware';
+import { AnimalModule } from './modules/animal/animal.module';
 
 @Module({
-  imports: [UserModule, AuthModule, UserModule],
+  imports: [UserModule, AuthModule, UserModule, AnimalModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
