@@ -6,9 +6,6 @@ import {
   Param,
   Post,
   Query,
-  Req,
-  UsePipes,
-  ValidationPipe,
 } from "@nestjs/common";
 import { AnimalService } from "./animal.service";
 
