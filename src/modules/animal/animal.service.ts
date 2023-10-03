@@ -9,22 +9,35 @@ export class AnimalService {
   async create(data) {
     let animal = null;
     try {
-      const fotos: Array<any> = data.fotos || [];
+      const fotos: Array<any> = data.fotos;
       delete data.fotos;
 
+      const user = await this.prisma.user.findFirst({
+        where: { id: data.user_id },
+      });
+
+      if (user && user.tipo_usuario === "1") {
+        throw new HttpException(
+          "Adotante não pode cadastrar animais!",
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
       animal = await this.prisma.animal.create({ data });
-      for (let foto of fotos) {
+
+      for (const foto of fotos) {
         foto.animal_id = animal.id;
 
         try {
           await this.prisma.foto.create({ data: foto });
         } catch (e) {
-          console.log(e);
+          throw new HttpException(
+            "Falha ao Cadastrar",
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
         }
       }
     } catch (e) {
-      console.log(e);
-
       throw new HttpException(
         "Falha ao Cadastrar",
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -42,25 +55,48 @@ export class AnimalService {
       include: {
         fotos: true,
         interesse: {
-            include: {
-              user: {
-                select: {
-                  // Selecione apenas os campos desejados, excluindo a senha
-                  id: true,
-                  nome: true,
-                  email: true,
-                  // Outros campos que você deseja incluir
-                },
+          include: {
+            user: {
+              select: {
+                id: true,
+                nome: true,
+                email: true,
               },
             },
           },
+        },
       },
     });
 
     return user;
   }
 
-  async findAll() {
-    return await this.prisma.animal.findMany();
+  async listAll(skip: number, take: number) {
+    const lines = await this.prisma.animal.count({
+      where: {
+        adotado: false,
+      },
+    });
+
+    const result = await this.prisma.animal.findMany({
+      skip: Number(skip),
+      take: Number(take),
+      where: {
+        adotado: false,
+      },
+      include: {
+        fotos: true,
+        interesse: true,
+        user: true,
+      },
+      orderBy: {
+        updated_at: "desc",
+      },
+    });
+    return { lines, result };
+  }
+
+  async remove(id: string) {
+    return await this.prisma.animal.delete({ where: { id } });
   }
 }

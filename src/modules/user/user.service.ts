@@ -43,8 +43,6 @@ export class UserService {
     try {
       userModel = await this.prisma.user.create({ data });
     } catch (e) {
-      console.log(e);
-
       throw new HttpException(
         "Falha ao Cadastrar",
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -93,15 +91,97 @@ export class UserService {
   }
 
   async interesse(id: string, animal_id: string) {
-    try {
-      return await this.prisma.interesse.create({
-        data: { user_id: id, animal_id },
-      });
-    } catch (e) {
+    const interesse = await this.prisma.interesse.findFirst({
+      where: {
+        user_id: id,
+        animal_id: animal_id,
+      },
+    });
+
+    if (!interesse) {
+      try {
+        return await this.prisma.interesse.create({
+          data: { user_id: id, animal_id },
+        });
+      } catch (e) {
+        throw new HttpException(
+          "Falha ao cadastrar interesse!",
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    } else {
       throw new HttpException(
-        "Falha ao Cadastrar",
+        "O interesse ja está cadastrado no sistema",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async listAllInteresse(user_id: string) {
+    try {
+      return await this.prisma.interesse.findMany({
+        where: {
+          user_id: user_id,
+        },
+        include: {
+          animal: true,
+        },
+      });
+    } catch (e) {
+      throw new HttpException(
+        "Falha ao carregar intereses!",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async removeInteresse(id: string, animal_id: string) {
+    let animal = null;
+    let interesse = null;
+
+    try {
+      animal = await this.prisma.animal.findFirst({
+        where: {
+          id: animal_id,
+        },
+        include: {
+          interesse: true,
+        },
+      });
+
+      if (animal) {
+        interesse = await this.prisma.interesse.findFirst({
+          where: {
+            OR: [{ AND: { user_id: id } }, { AND: { animal_id: animal.id } }],
+          },
+        });
+      }
+
+      if (interesse) {
+        return await this.prisma.interesse.delete({
+          where: {
+            id: interesse.id,
+          },
+        });
+      }
+    } catch (error) {
+      throw new HttpException(
+        "Falha ao remover interese!",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (!interesse || !animal) {
+      throw new HttpException(
+        "Falha ao remover interese!",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return true;
+  }
+
+  async remove(id: string) {
+    return await this.prisma.user.delete({ where: { id: id } });
   }
 }

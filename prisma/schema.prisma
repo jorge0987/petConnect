@@ -8,21 +8,21 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String        @id @default(uuid())
   tipo_usuario  String
   nome          String
   endereco      String?
-  cnpj          String?   @unique
+  cnpj          String?       @unique
   contato       String
   historico     String?
-  email         String    @unique
+  email         String        @unique
   senha         String  
   interesse     Interesse[]
   animal        Animal[]
 }
 
 model Animal {
-  id            String    @id @default(uuid())
+  id            String        @id @default(uuid())
   especie       String
   raca          String
   idade         String
@@ -31,9 +31,11 @@ model Animal {
   descricao     String
   personalidade String
   adotado       Boolean
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt @default(now())
   fotos         foto[]
   interesse     Interesse[]
-  user          User?     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user          User?         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id       String
   
 }
@@ -41,7 +43,7 @@ model Animal {
 model foto {
   id            String    @unique  @id @default(uuid())
   arquivo       String     
-  animal        Animal   @relation(fields: [animal_id], references: [id], onDelete: Cascade)
+  animal        Animal    @relation(fields: [animal_id], references: [id], onDelete: Cascade)
   animal_id     String
 }
 
