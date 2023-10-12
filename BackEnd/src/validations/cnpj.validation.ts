@@ -1,13 +1,13 @@
 import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
-} from 'class-validator';
+} from "class-validator";
 
 @ValidatorConstraint({ async: true })
 export class CnpjValidator implements ValidatorConstraintInterface {
   validate(cnpj: string): boolean {
     // Remove todos os caracteres que não são números do CNPJ
-    cnpj = cnpj.replace(/\D/g, '');
+    cnpj = cnpj.replace(/\D/g, "");
 
     // Verifica se o CNPJ tem 14 dígitos
     if (cnpj.length !== 14) {

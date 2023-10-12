@@ -42,7 +42,7 @@ model Animal {
 
 model foto {
   id            String    @unique  @id @default(uuid())
-  arquivo       String     
+  arquivo       Bytes     
   animal        Animal    @relation(fields: [animal_id], references: [id], onDelete: Cascade)
   animal_id     String
 }

@@ -117,7 +117,7 @@ export class UserService {
     }
   }
 
-  async listAllInteresse(user_id: string) {
+  async listAllInteresseByUser(user_id: string) {
     try {
       return await this.prisma.interesse.findMany({
         where: {

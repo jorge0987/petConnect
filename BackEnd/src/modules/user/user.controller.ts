@@ -36,7 +36,7 @@ export class UserController {
 
   @Get("interesse/:user_id")
   async listAllInteresse(@Param("user_id") id: string) {
-    return await this.user.listAllInteresse(id);
+    return await this.user.listAllInteresseByUser(id);
   }
 
   @Delete("interesse/:id/:animal_id")

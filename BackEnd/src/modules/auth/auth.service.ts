@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/database/PrismaService';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "src/database/PrismaService";
+import * as bcrypt from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
@@ -18,10 +18,10 @@ export class AuthService {
 
     if (user) {
       if (!(await bcrypt.compare(body.senha, user.senha))) {
-        return 'login ou senha incorreto';
+        return "login ou senha incorreto";
       }
     } else {
-      return 'falha no login';
+      return "falha no login";
     }
 
     const payload = {
@@ -43,10 +43,10 @@ export class AuthService {
 
     if (user) {
       if (!(await bcrypt.compare(body.senha, user.senha))) {
-        return 'login ou senha incorreto';
+        return "login ou senha incorreto";
       }
     } else {
-      return 'falha no login';
+      return "falha no login";
     }
 
     const payload = {

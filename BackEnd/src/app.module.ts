@@ -1,4 +1,5 @@
 import {
+  ClassSerializerInterceptor,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -8,9 +9,17 @@ import { UserModule } from "./modules/user/user.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { AnimalModule } from "./modules/animal/animal.module";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 
 @Module({
   imports: [UserModule, AuthModule, UserModule, AnimalModule],
+  controllers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

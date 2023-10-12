@@ -1,7 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import { Body, Controller, Post } from "@nestjs/common";
+import { AuthService } from "./auth.service";
 
-@Controller('login')
+@Controller("login")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -10,7 +10,7 @@ export class AuthController {
     return this.authService.login(body);
   }
 
-  @Post('instituicao')
+  @Post("instituicao")
   async loginInstituicao(@Body() body) {
     return this.authService.loginInstituicao(body);
   }

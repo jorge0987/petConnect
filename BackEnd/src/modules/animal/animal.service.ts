@@ -7,6 +7,7 @@ export class AnimalService {
 
   async create(data) {
     let animal = null;
+
     try {
       const fotos: Array<any> = data.fotos;
       delete data.fotos;
@@ -22,13 +23,18 @@ export class AnimalService {
         );
       }
 
+      data.adotado = false;
+
       animal = await this.prisma.animal.create({ data });
 
       for (const foto of fotos) {
-        foto.animal_id = animal.id;
+        const foto_create: any = {
+          animal_id: animal.id,
+          arquivo: foto.buffer,
+        };
 
         try {
-          await this.prisma.foto.create({ data: foto });
+          await this.prisma.foto.create({ data: foto_create });
         } catch (e) {
           throw new HttpException(
             "Falha ao Cadastrar",
@@ -38,7 +44,7 @@ export class AnimalService {
       }
     } catch (e) {
       throw new HttpException(
-        "Falha ao Cadastrar",
+        "Falha ao Cadastrar animal",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -66,6 +72,14 @@ export class AnimalService {
         },
       },
     });
+
+    const fotos = user.fotos;
+    const fotos_formated = [];
+    for (const foto of fotos) {
+      fotos_formated.push({ ...foto, arquivo: foto.arquivo.toString("utf-8") });
+    }
+    delete user.fotos;
+    user.fotos = fotos_formated;
 
     return user;
   }
@@ -96,6 +110,6 @@ export class AnimalService {
   }
 
   async remove(id: string) {
-    return await this.prisma.animal.delete({ where: { id } });
+    return await this.prisma.animal.delete({ where: { id: String(id) } });
   }
 }
