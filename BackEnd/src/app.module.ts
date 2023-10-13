@@ -9,10 +9,11 @@ import { UserModule } from "./modules/user/user.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { AuthMiddleware } from "./middleware/auth.middleware";
 import { AnimalModule } from "./modules/animal/animal.module";
+import { HomeModule } from "./modules/Home/home.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 
 @Module({
-  imports: [UserModule, AuthModule, UserModule, AnimalModule],
+  imports: [UserModule, HomeModule, AuthModule, UserModule, AnimalModule],
   controllers: [],
   providers: [
     {
