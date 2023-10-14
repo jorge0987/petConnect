@@ -9,9 +9,4 @@ export class AuthController {
   async login(@Body() body) {
     return this.authService.login(body);
   }
-
-  @Post("instituicao")
-  async loginInstituicao(@Body() body) {
-    return this.authService.loginInstituicao(body);
-  }
 }

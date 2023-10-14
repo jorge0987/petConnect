@@ -31,31 +31,8 @@ export class AuthService {
 
     return {
       token: this.jwtService.sign(payload),
-    };
-  }
-
-  async loginInstituicao(body) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: body.email,
-      },
-    });
-
-    if (user) {
-      if (!(await bcrypt.compare(body.senha, user.senha))) {
-        return "login ou senha incorreto";
-      }
-    } else {
-      return "falha no login";
-    }
-
-    const payload = {
       id: user.id,
-      acess_level: user.email,
-    };
-
-    return {
-      token: this.jwtService.sign(payload),
+      tipo_usuario: user.tipo_usuario,
     };
   }
 }

@@ -91,7 +91,7 @@ export class AnimalService {
       },
     });
 
-    const result = await this.prisma.animal.findMany({
+    const result: any = await this.prisma.animal.findMany({
       skip: Number(skip),
       take: Number(take),
       where: {
@@ -106,6 +106,21 @@ export class AnimalService {
         updated_at: "desc",
       },
     });
+
+    for (const animal of result) {
+      const fotosFormat: any = [];
+
+      for (const foto of animal.fotos) {
+        fotosFormat.push({
+          ...foto,
+          arquivo:
+            "data:image/png;base64," +
+            Buffer.from(foto.arquivo).toString("base64"),
+        });
+      }
+      animal.fotos = [...fotosFormat];
+    }
+
     return { lines, result };
   }
 
