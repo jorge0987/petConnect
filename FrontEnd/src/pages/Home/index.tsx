@@ -34,7 +34,7 @@ function Home() {
   const [typeUser, setTypeUser] = useState<string>(
     String(localStorage.getItem("tipo_usuario"))
   );
-  const [value, setValue] = useState<any>('')
+  const [value, setValue] = useState<any>("");
   const [institution, setInstitution] = useState(false);
   const [enableForm, setEnableForm] = useState(false);
   const [data, setData] = useState<AnimalProps>(emptyData);
@@ -44,27 +44,34 @@ function Home() {
   function addFile(event: any) {
     const file = event.target.files[0];
     const reader = new FileReader();
-    let blob: any
-    reader.onload = function(event: any) {
+    let blob: any;
+    reader.onload = function (event: any) {
       blob = new Blob([event.target.result], { type: file.type });
       // Faça algo com o objeto Blob aqui, como enviá-lo para o servidor ou processá-lo localmente
-      
+
       const readerBase64 = new FileReader();
-      readerBase64.onloadend = function() {
+      readerBase64.onloadend = function () {
         const base64data = readerBase64.result;
         data.fotos.push(base64data);
-        setData({...data, fotos: [...data.fotos]})
+        setData({ ...data, fotos: [...data.fotos] });
       };
       readerBase64.readAsDataURL(blob);
     };
-    
-    reader.readAsArrayBuffer(file); 
+
+    reader.readAsArrayBuffer(file);
   }
 
   async function register() {
-    data.user_id = localStorage.getItem('userId') || ''
-    
-    await api.register({params: 'animal', body: data})
+    data.user_id = localStorage.getItem("userId") || "";
+
+    const res = await api.register({ params: "animal", body: data });
+    if (res.statusCode) {
+      console.log("alerta de erro aqui");
+    } else {
+      await getAnimalsByInstitution()
+      setEnableForm(false);
+      setData({ ...emptyData, fotos: [] });
+    }
   }
 
   async function getPosts() {
@@ -80,17 +87,17 @@ function Home() {
     if (res.statusCode) {
       alert("erro ao carregar Animais!");
     } else {
-      animal.interessados = res
-      setPosts([...posts])
+      animal.interessados = res;
+      setPosts([...posts]);
     }
   }
   function removeFile(index: number) {
     if (data.fotos[index].id) {
-      data.fotos[index].excluir = true
+      data.fotos[index].excluir = true;
     } else {
-      data.fotos.splice(index, 1)
+      data.fotos.splice(index, 1);
     }
-    setData({...data, fotos: data.fotos})
+    setData({ ...data, fotos: data.fotos });
   }
 
   async function getAnimalsByInstitution() {
@@ -319,41 +326,48 @@ function Home() {
                         key={index}
                         className="w-[90%] p-2 h-[200px] rounded-3xl group/item relative"
                       >
-                      <img
-                        src={foto}
-                        className="w-full h-full rounded-3xl"
-                        />
-                        <div className={`w-[95%] m-auto flex justify-center items-center h-[90%] top-[10px] left-[10px] group/edit invisible rounded-[10px] opacity-70 group-hover/item:visible absolute
-                          `}>
-                            
-                            <div className='group-hover/item:text-white w-[100px] h-[100px] border-2 border-white rounded-xl flex items-center justify-center'
-                              onClick={() => removeFile(index)}
-                            >
-                              <i className='group-hover/item:text-white uil uil-trash-alt h-[160px] cursor-pointer text-[100px]'></i>
-                            </div>
+                        <img src={foto} className="w-full h-full rounded-3xl" />
+                        <div
+                          className={`w-[95%] m-auto flex justify-center items-center h-[90%] top-[10px] left-[10px] group/edit invisible rounded-[10px] opacity-70 group-hover/item:visible absolute
+                          `}
+                        >
+                          <div
+                            className="group-hover/item:text-white w-[100px] h-[100px] border-2 border-white rounded-xl flex items-center justify-center"
+                            onClick={() => removeFile(index)}
+                          >
+                            <i className="group-hover/item:text-white uil uil-trash-alt h-[160px] cursor-pointer text-[100px]"></i>
+                          </div>
                         </div>
                       </div>
                     );
                   })}
-                  {
-                    !(data.fotos.length > 3) && <div>
-                      <label htmlFor='inputFile'  className='w-24 h-24 flex flex-col items-center justify-center rounded-[10px] border-dotted border-2 bg-[#F5F7FB] cursor-pointer'
-                        onClick={() => setValue('')}
+                  {!(data.fotos.length > 3) && (
+                    <div>
+                      <label
+                        htmlFor="inputFile"
+                        className="w-24 h-24 flex flex-col items-center justify-center rounded-[10px] border-dotted border-2 bg-[#F5F7FB] cursor-pointer"
+                        onClick={() => setValue("")}
                       >
                         <i className="uil uil-plus text-5xl"></i>
                       </label>
-                    </div> 
-                  }
-                  <input type="file" value={value} className='hidden' accept="image/jpeg" id='inputFile' onChange={(el:any) => {
-                    setValue(value)
-                    addFile(el);
-                  }} />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    value={value}
+                    className="hidden"
+                    accept="image/jpeg"
+                    id="inputFile"
+                    onChange={(el: any) => {
+                      setValue(value);
+                      addFile(el);
+                    }}
+                  />
                 </div>
                 <div className="w-full flex justify-end">
                   <Button
                     text="Voltar"
-                    color="gray-400"
-                    className="w-24 mr-2"
+                    className="w-24 mr-2 bg-gray-500"
                     handle={() => setEnableForm(false)}
                   />
                   <Button
@@ -365,11 +379,9 @@ function Home() {
               </section>
             </div>
           )) || (
-            <div
-              className="w-full flex flex-col items-center justify-center pt-10 bg-background"
-            >
+            <div className="w-full flex flex-col items-center justify-center pt-10 bg-background">
               <section className="w-[60%] bg-gray-200 flex flex-col pt-10 px-10">
-                {(posts.length > 0 &&
+                {posts.length > 0 &&
                   posts.map((animal: any, index: number) => {
                     return (
                       <div
@@ -460,8 +472,8 @@ function Home() {
                             <Button
                               text="Editar"
                               handle={() => {
-                                setData({...animal})
-                                setEnableForm(true)
+                                setData({ ...animal });
+                                setEnableForm(true);
                               }}
                               className={`w-24 mr-2 bg-secondary`}
                             />
@@ -472,34 +484,41 @@ function Home() {
                             />
                           </div>
                         </div>
-                        {
-                          animal.interessados &&  animal.interessados.map((interesse: any, j: number) => {
-                            return (
-                              <div key={j} className="w-full px-4 py-2 my-2 flex justify-between items-center bg-gray-300 rounded-xl">
-                                <p>{interesse.user.nome}</p>
-                                <p>{interesse.user.contato}</p>
-                                <p>{interesse.user.historico}</p>
-                                <p>{interesse.user.email}</p>
-                              </div>
-                            )
-                          })
-                        }
+                        {animal.interessados &&
+                          animal.interessados.map(
+                            (interesse: any, j: number) => {
+                              return (
+                                <div
+                                  key={j}
+                                  className="w-full px-4 py-2 my-2 flex justify-between items-center bg-gray-300 rounded-xl"
+                                >
+                                  <p>{interesse.user.nome}</p>
+                                  <p>{interesse.user.contato}</p>
+                                  <p>{interesse.user.historico}</p>
+                                  <p>{interesse.user.email}</p>
+                                </div>
+                              );
+                            }
+                          )}
                       </div>
                     );
-                  }))}
+                  })}
               </section>
             </div>
           )}
-          {
-            !enableForm &&
-            <div className="w-full flex items-center justify-center mb-10" 
-            onClick={() => setEnableForm(true)}
+          {!enableForm && (
+            <div
+              className="w-full flex items-center justify-center mb-10"
+              onClick={() => {
+                setData({ ...emptyData, fotos: [] });
+                setEnableForm(true);
+              }}
             >
               <div className="w-32 p-2 text-white font-bold bg-secondary rounded-xl flex justify-between items-center">
                 Adicionar <UilPlus />
               </div>
             </div>
-          }
+          )}
         </div>
       )}
     </PageTemplate>
