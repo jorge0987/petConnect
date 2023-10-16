@@ -22,6 +22,11 @@ export class UserService {
     if (!data.cnpj) delete data.cnpj;
     if (!data.endereco) delete data.endereco;
     if (!data.historico) delete data.historico;
+    if (!data.contato) delete data.contato;
+    if (!data.foto) delete data.foto;
+    else {
+      data.foto = Buffer.from(data.foto, "base64");
+    }
 
     if (data.tipo_usuario === "2") {
       if (!data.cnpj) {
@@ -39,7 +44,6 @@ export class UserService {
       }
     }
     let userModel = null;
-
     try {
       userModel = await this.prisma.user.create({ data });
     } catch (e) {
@@ -49,7 +53,7 @@ export class UserService {
       );
     }
 
-    return userModel;
+    return userModel.id;
   }
 
   async show(id: string) {
@@ -57,9 +61,23 @@ export class UserService {
       where: {
         id: id,
       },
+      select: {
+        id: true,
+        cnpj: true,
+        contato: true,
+        endereco: true,
+        nome: true,
+        foto: true,
+        historico: true,
+      },
     });
 
-    return user;
+    return {
+      ...user,
+      foto: user.foto
+        ? "data:image/png;base64," + Buffer.from(user.foto).toString("base64")
+        : null,
+    };
   }
 
   async showUserByEmail(email: string) {
@@ -83,14 +101,51 @@ export class UserService {
   }
 
   async findAllByType(type: string) {
-    return await this.prisma.user.findMany({
+    try {
+      const users = await this.prisma.user.findMany({
+        where: {
+          tipo_usuario: type,
+        },
+        select: {
+          id: true,
+          cnpj: true,
+          contato: true,
+          endereco: true,
+          nome: true,
+          foto: true,
+          historico: true,
+        },
+      });
+      const newData: any = [];
+      users.map((user: any) => {
+        newData.push({
+          ...user,
+          foto: user.foto
+            ? `data:image/png;base64,${Buffer.from(user.foto).toString(
+                "base64",
+              )}`
+            : null,
+        });
+      });
+
+      return newData;
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async listInteresseByAnimal(animal_id: string) {
+    return await this.prisma.interesse.findMany({
       where: {
-        tipo_usuario: type,
+        animal_id: animal_id,
+      },
+      include: {
+        user: true,
       },
     });
   }
 
-  async interesse(id: string, animal_id: string) {
+  async addInteresseInAnimal(id: string, animal_id: string) {
     const interesse = await this.prisma.interesse.findFirst({
       where: {
         user_id: id,
@@ -110,10 +165,7 @@ export class UserService {
         );
       }
     } else {
-      throw new HttpException(
-        "O interesse ja está cadastrado no sistema",
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      await this.removeInteresse(id, animal_id, interesse.id);
     }
   }
 
@@ -135,10 +187,25 @@ export class UserService {
     }
   }
 
-  async removeInteresse(id: string, animal_id: string) {
+  async removeInteresse(id: string, animal_id: string, interese_id?: string) {
     let animal = null;
     let interesse = null;
 
+    if (interese_id) {
+      try {
+        await this.prisma.interesse.delete({
+          where: {
+            id: interese_id,
+          },
+        });
+        return true;
+      } catch (error) {
+        throw new HttpException(
+          "Falha ao remover interese!",
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
     try {
       animal = await this.prisma.animal.findFirst({
         where: {
@@ -158,11 +225,12 @@ export class UserService {
       }
 
       if (interesse) {
-        return await this.prisma.interesse.delete({
+        await this.prisma.interesse.delete({
           where: {
             id: interesse.id,
           },
         });
+        return true;
       }
     } catch (error) {
       throw new HttpException(

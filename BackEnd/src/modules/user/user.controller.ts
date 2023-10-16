@@ -6,10 +6,13 @@ import {
   Param,
   Post,
   UsePipes,
+  UploadedFiles,
+  UseInterceptors,
   ValidationPipe,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UserDTO } from "./user.dto";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
 
 @Controller("user")
 export class UserController {
@@ -21,17 +24,27 @@ export class UserController {
     return await this.user.create(data);
   }
 
+  @Get("show/:id")
+  async show(@Param("id") id: string) {
+    return await this.user.show(id);
+  }
+
   @Get(":tipo")
   async findAll(@Param("tipo") tipo: string) {
     return await this.user.findAllByType(tipo);
   }
 
+  @Get("interesse/list/:animal_id")
+  async listInteresseByAnimal(@Param("animal_id") animal_id: string) {
+    return await this.user.listInteresseByAnimal(animal_id);
+  }
+
   @Get("interesse/:id/:animal_id")
-  async interesse(
+  async addInteresseInAnimal(
     @Param("id") id: string,
     @Param("animal_id") animal_id: string,
   ) {
-    return await this.user.interesse(id, animal_id);
+    return await this.user.addInteresseInAnimal(id, animal_id);
   }
 
   @Get("interesse/:user_id")

@@ -18,7 +18,7 @@ export default function Button(props: ButtonProps) {
       className={`
       w-40 h-10 text-lg font-semibold rounded-xl outline-none text-center text-white
       ${props.disable ? "cursor-default" : "cursor-pointer"}
-      ${props.color ? "bg-" + props.color : "bg-gray-400"}
+      ${props.color ? "bg-" + props.color : ""}
       ${props.className}
       `}
       onClick={

@@ -19,6 +19,7 @@ export type DataProps = {
   email: string;
   senha: string;
   cnpj?: string;
+  foto?: string;
 };
 
 const emptyData = {
@@ -30,6 +31,7 @@ const emptyData = {
   contato: "",
   email: "",
   senha: "",
+  foto: ""
 };
 
 export default function Register() {
@@ -48,35 +50,34 @@ export default function Register() {
   }
 
   async function validate() {
-    if (selectedOption === 'option1') {
+    if (selectedOption === "option1") {
       if (!data.nome || !data.email || !data.senha) {
-        alert('Preencha os dados corretamente!')
+        alert("Preencha os dados corretamente!");
         return;
       }
-    } else if (!data.nome || !data.cnpj || !data.email && !data.senha) {
-      alert('Preencha os dados corretamente!')
+    } else if (!data.nome || !data.cnpj || (!data.email && !data.senha)) {
+      alert("Preencha os dados corretamente!");
       return;
     }
 
-    
-    const dataCopy = { ...data } 
-    if (selectedOption === 'option1') dataCopy.tipo_usuario = '1'
+    const dataCopy = { ...data };
+    if (selectedOption === "option1") dataCopy.tipo_usuario = "1";
     else {
-      dataCopy.tipo_usuario = '2'
+      dataCopy.tipo_usuario = "2";
     }
-    if (!dataCopy.cnpj) delete dataCopy.cnpj
-    if (!dataCopy.contato) delete dataCopy.contato
-    if (!dataCopy.endereco) delete dataCopy.endereco
-    if (!dataCopy.historico) delete dataCopy.historico
-
-    const res = await api.create({body: dataCopy})
-    if (res.statusCode) {
-      alert('Falha no Cadastro')
-    } else {
-      alert('Cadastrado com Sucesso!')
-      navigate('/login')
-    }
+    if (!dataCopy.cnpj) delete dataCopy.cnpj;
+    if (!dataCopy.contato) delete dataCopy.contato;
+    if (!dataCopy.endereco) delete dataCopy.endereco;
+    if (!dataCopy.historico) delete dataCopy.historico;
     
+    let res = await api.create({ body: dataCopy });
+    
+    if (res.statusCode) {
+      alert("Falha no Cadastro");
+    } else {
+      alert("Cadastrado com Sucesso!");
+      navigate("/login");
+    }
   }
   return (
     <PageTemplate disableMenu>
@@ -112,7 +113,7 @@ export default function Register() {
           )) ||
             (selectedOption === "option1" && (
               <FormAdopter data={data} setData={setData} />
-            )) || <FormInstituicao data={data} setData={setData}/>}
+            )) || <FormInstituicao data={data} setData={setData} />}
           <img
             src={
               !activeForm
@@ -122,7 +123,7 @@ export default function Register() {
                 : institution
             }
             alt=""
-            className="w-[30%] absolute bottom-0 right-0"
+            className={`absolute bottom-0 right-0 ${activeForm && selectedOption === 'option2' ? 'w-[25%]' : 'w-[30%]'}`}
           />
         </div>
         <div className="w-full flex items-end pt-1 justify-end border-t-2 border-secondary">

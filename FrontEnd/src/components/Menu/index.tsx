@@ -36,7 +36,7 @@ export default function Menu() {
   return (
     <div className="w-full h-12 px-32 bg-primary flex items-center justify-between fixed">
       <div>logo</div>
-      <div><button onClick={logout}>sair</button></div>
+      <div className="flex"><button onClick={logout}>sair</button></div>
     </div>
   )
 }

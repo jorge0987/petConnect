@@ -16,7 +16,8 @@ model User {
   contato       String
   historico     String?
   email         String        @unique
-  senha         String  
+  senha         String
+  foto          Bytes?     
   interesse     Interesse[]
   animal        Animal[]
 }

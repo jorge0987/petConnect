@@ -1,4 +1,5 @@
 import {
+  IsByteLength,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -44,6 +45,9 @@ export class UserDTO {
       "Formato Inválido. O campo Telefone esperava uma cadeia de caracteres",
   })
   historico: string;
+
+  @IsOptional()
+  foto: any;
 
   @IsNotEmpty()
   @IsString({

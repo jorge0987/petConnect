@@ -30,7 +30,7 @@ export class AnimalService {
       for (const foto of fotos) {
         const foto_create: any = {
           animal_id: animal.id,
-          arquivo: foto.buffer,
+          arquivo: Buffer.from(foto, "base64"),
         };
 
         try {
@@ -84,7 +84,67 @@ export class AnimalService {
     return user;
   }
 
-  async listAll(skip: number, take: number) {
+  async listAllByUser(userId: string) {
+    const result: any = await this.prisma.animal.findMany({
+      where: {
+        user_id: userId,
+      },
+      include: {
+        fotos: true,
+        interesse: true,
+        user: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            endereco: true,
+            contato: true,
+            historico: true,
+            foto: true,
+          },
+        },
+      },
+      orderBy: {
+        updated_at: "desc",
+      },
+    });
+
+    for (const animal of result) {
+      const fotosFormat: any = [];
+
+      if (animal.interesse) {
+        for (const interesse of animal.interesse) {
+          if (interesse.user_id === userId) {
+            animal.interesseActive = true;
+          }
+        }
+      }
+      delete animal.interesse;
+      if (animal.user.foto) {
+        animal.user.foto =
+          "data:image/png;base64," +
+          Buffer.from(animal.user.foto)
+            .toString("base64")
+            .replace("dataimage/jpegbase64", "");
+      }
+
+      for (const foto of animal.fotos) {
+        fotosFormat.push({
+          ...foto,
+          arquivo:
+            "data:image/png;base64," +
+            Buffer.from(foto.arquivo)
+              .toString("base64")
+              .replace("dataimage/jpegbase64", ""),
+        });
+      }
+      animal.fotos = [...fotosFormat];
+    }
+
+    return result;
+  }
+
+  async listAll(skip: number, take: number, userId: string) {
     const lines = await this.prisma.animal.count({
       where: {
         adotado: false,
@@ -100,7 +160,17 @@ export class AnimalService {
       include: {
         fotos: true,
         interesse: true,
-        user: true,
+        user: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            endereco: true,
+            contato: true,
+            historico: true,
+            foto: true,
+          },
+        },
       },
       orderBy: {
         updated_at: "desc",
@@ -108,14 +178,33 @@ export class AnimalService {
     });
 
     for (const animal of result) {
-      const fotosFormat: any = [];
+      if (animal.interesse) {
+        for (const interesse of animal.interesse) {
+          if (interesse.user_id === userId) {
+            animal.interesseActive = true;
+          }
+        }
+      }
+      delete animal.interesse;
 
+      if (animal.user.foto) {
+        animal.user.foto =
+          "data:image/png;base64," +
+          Buffer.from(animal.user.foto)
+            .toString("base64")
+            .replace("dataimage/pngbase64", "")
+            .replace("dataimage/jpegbase64", "");
+      }
+
+      const fotosFormat: any = [];
       for (const foto of animal.fotos) {
         fotosFormat.push({
           ...foto,
           arquivo:
             "data:image/png;base64," +
-            Buffer.from(foto.arquivo).toString("base64"),
+            Buffer.from(foto.arquivo)
+              .toString("base64")
+              .replace("dataimage/jpegbase64", ""),
         });
       }
       animal.fotos = [...fotosFormat];

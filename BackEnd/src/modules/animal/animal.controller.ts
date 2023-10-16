@@ -7,26 +7,15 @@ import {
   Post,
   Put,
   Query,
-  UploadedFiles,
-  UseInterceptors,
 } from "@nestjs/common";
 import { AnimalService } from "./animal.service";
-import { FileFieldsInterceptor } from "@nestjs/platform-express";
-import { CreateAnimalDto } from "./animal.dto";
 
 @Controller("animal")
 export class AnimalController {
   constructor(private readonly animal: AnimalService) {}
 
   @Post()
-  @UseInterceptors(FileFieldsInterceptor([{ name: "fotos", maxCount: 4 }]))
-  async create(
-    @UploadedFiles()
-    data,
-    @Body() form: any,
-  ) {
-    form.fotos = data.fotos || [];
-
+  async create(@Body() form: any) {
     return await this.animal.create(form);
   }
 
@@ -35,9 +24,18 @@ export class AnimalController {
     return await this.animal.show(id);
   }
 
-  @Get()
-  async listAll(@Query("skip") skip: number, @Query("take") take: number) {
-    return await this.animal.listAll(skip, take);
+  @Get("user/:id")
+  async listAllByUser(@Param("id") id: string) {
+    return await this.animal.listAllByUser(id);
+  }
+
+  @Get("feed/:userId")
+  async listAll(
+    @Param("userId") userId: string,
+    @Query("skip") skip: number,
+    @Query("take") take: number,
+  ) {
+    return await this.animal.listAll(skip, take, userId);
   }
 
   @Put(":id")
