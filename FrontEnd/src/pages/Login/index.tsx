@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import login from '../../assets/login.svg'
+import { message } from "antd";
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -8,7 +9,12 @@ function Login() {
 
   const loginUser = async () => {
     if (!email || !senha) {
-      alert("preencha os campos corretamente");
+      message.error({
+        content: "Preencha os campos corretamente",
+        style: {
+          color: 'red'
+        }
+      });
     } else {
       fetch(`http://localhost:3334/login`, {
         method: "POST",
@@ -28,7 +34,12 @@ function Login() {
           navigate("/");
         })
         .catch((error) => {
-          alert("Login inválido");
+          message.error({
+            content: "Login inválido",
+            style: {
+              color: 'red'
+            }
+          });
         });
     }
   };
@@ -55,7 +66,7 @@ function Login() {
           />
           <label className="text-2xl font-semibold">Senha</label>
           <input
-            type="text"
+            type="password"
             name="senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}

@@ -28,6 +28,10 @@ export class AnimalController {
   async listAllByUser(@Param("id") id: string) {
     return await this.animal.listAllByUser(id);
   }
+  @Get("adotar/:animalId")
+  async adotarAnimal(@Param("animalId") animalId: string) {
+    return await this.animal.adotarAnimal(animalId);
+  }
 
   @Get("feed/:userId")
   async listAll(

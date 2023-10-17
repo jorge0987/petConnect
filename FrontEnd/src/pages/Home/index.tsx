@@ -5,6 +5,7 @@ import { api } from "../../api";
 import Button from "../../components/Button";
 import { UilPlus, UilPentagon } from "@iconscout/react-unicons";
 import Label from "../../components/Label";
+import { message } from "antd";
 
 type AnimalProps = {
   especie: string;
@@ -62,22 +63,53 @@ function Home() {
   }
 
   async function register() {
+    if (!data.fotos.length) {
+      message.error({
+        content: 'Adicione pelo menos uma foto ao animal',
+        style: {
+          color: 'red'
+        }
+      }); 
+      return;
+    }
     data.user_id = localStorage.getItem("userId") || "";
 
     const res = await api.register({ params: "animal", body: data });
     if (res.statusCode) {
-      console.log("alerta de erro aqui");
+      message.error({
+        content: res.statusCode,
+        style: {
+          color: 'red'
+        }
+      }); 
     } else {
+      message.success({
+        content: 'Animal cadastrado com sucesso1',
+      });
       await getAnimalsByInstitution()
       setEnableForm(false);
       setData({ ...emptyData, fotos: [] });
     }
   }
 
+  async function confirmAdocao(animal) {
+    await api.adotarAnimal(animal.id)
+    message.success({
+      content: 'Adoção aprovada com sucesso'
+    })
+    await getAnimalsByInstitution();
+    
+  }
+
   async function getPosts() {
     const res = await api.index({ params: "animal" }, true);
     if (res.statusCode) {
-      alert("erro ao carregar Animais!");
+      message.error({
+        content: 'erro ao carregar Animais!',
+        style: {
+          color: 'red'
+        }
+      });
     } else {
       setPosts(res.result);
     }
@@ -85,7 +117,12 @@ function Home() {
   async function getInteresseByAnimal(animal: any) {
     const res = await api.listInteresseByAnimal(animal.id);
     if (res.statusCode) {
-      alert("erro ao carregar Animais!");
+      message.error({
+        content: 'erro ao carregar Animais!',
+        style: {
+          color: 'red'
+        }
+      });
     } else {
       animal.interessados = res;
       setPosts([...posts]);
@@ -102,8 +139,14 @@ function Home() {
 
   async function getAnimalsByInstitution() {
     const res = await api.getAnimalsByInstitution();
+    
     if (res.statusCode) {
-      alert("erro ao carregar Animais!");
+      message.error({
+        content: 'erro ao carregar Animais!',
+        style: {
+          color: 'red'
+        }
+      });
     } else {
       setPosts(res);
     }
@@ -117,9 +160,17 @@ function Home() {
     const res = await api.addInteresse(animal.id);
     if (res.statusCode) {
       animal.interesseActive = !animal.interesseActive;
-      alert("Falha ao demonstrar interesse");
+      message.error({
+        content: 'Falha',
+        style: {
+          color: 'red'
+        }
+      });
     } else {
       animal.interesseActive = !animal.interesseActive;
+      message.success({
+        content: animal.interesseActive ? 'Interesse adicionado com sucesso!' : 'Interesse removido com sucesso!',
+      });
     }
     refreshCurrentPosts();
   }
@@ -461,12 +512,22 @@ function Home() {
                           })}
                         </div>
                         <div className="w-full flex items-end justify-between mt-4">
-                          <div>
-                            <Button
-                              text="Interessados"
-                              handle={() => getInteresseByAnimal(animal)}
-                              className={`w-36 bg-[#53740E]`}
-                            />
+                          <div className="relative">
+                            {
+                              animal.adotado && <div className="p-2 bg-primary rounded-xl text-white">Animal adotado!</div> ||
+                              <>
+                              <Button
+                                text="Interessados"
+                                handle={() => getInteresseByAnimal(animal)}
+                                className={`w-36 bg-[#53740E]`}
+                              />
+                              {
+                                animal.interesse && animal.interesse.length > 0 && <div className="w-5 h-5 rounded-full bg-red-500 absolute right-0 top-[-10px] flex items-center justify-center">
+                                <i className="uil uil-info text-white text-2xl"></i>
+                                </div>
+                              }
+                            </>
+                          }
                           </div>
                           <div className="flex">
                             <Button
@@ -488,14 +549,19 @@ function Home() {
                           animal.interessados.map(
                             (interesse: any, j: number) => {
                               return (
-                                <div
-                                  key={j}
-                                  className="w-full px-4 py-2 my-2 flex justify-between items-center bg-gray-300 rounded-xl"
-                                >
-                                  <p>{interesse.user.nome}</p>
-                                  <p>{interesse.user.contato}</p>
-                                  <p>{interesse.user.historico}</p>
-                                  <p>{interesse.user.email}</p>
+                                <div key={j} className="w-full flex items-center ">
+                                  <div
+                                    className="w-full px-4 py-2 my-2 flex justify-between items-center bg-gray-300 rounded-xl"
+                                  >
+                                    <p>{interesse.user.nome}</p>
+                                    <p>{interesse.user.contato}</p>
+                                    <p>{interesse.user.historico}</p>
+                                    <p>{interesse.user.email}</p>
+                                  </div>
+                                  {
+                                    !animal.adotado &&
+                                    <Button handle={() => confirmAdocao(animal)} text="Aprovar" color="primary" className="ml-2"/>
+                                  }
                                 </div>
                               );
                             }

@@ -1,3 +1,4 @@
+import { message } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +27,10 @@ export default function Menu() {
           localStorage.removeItem("token");
           localStorage.removeItem("userId");
           localStorage.removeItem("tipo_usuario");
-          alert('faça o login')
+          message.warning({
+            content: "Realize o login",
+          }); 
+
           navigate("/login");
         } 
       })
@@ -34,7 +38,7 @@ export default function Menu() {
       });
   }, []);
   return (
-    <div className="w-full h-12 px-32 bg-primary flex items-center justify-between fixed">
+    <div className="w-full h-12 px-32 bg-primary flex items-center justify-between fixed z-50">
       <div>logo</div>
       <div className="flex"><button onClick={logout}>sair</button></div>
     </div>

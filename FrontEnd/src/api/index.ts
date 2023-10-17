@@ -70,6 +70,19 @@ class Api {
       .catch((error) => error);
   }
 
+  async adotarAnimal(animalId: string) {
+    return await fetch(`http://localhost:3334/animal/adotar/${animalId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => data)
+      .catch((error) => error);
+  }
+
   async listInteresseByAnimal(animalId: string) {
     return await fetch(`http://localhost:3334/user/interesse/list/${animalId}`, {
       method: "GET",

@@ -9,6 +9,7 @@ import FormAdopter from "./FormAdopter";
 import { api } from "../../api";
 import FormInstituicao from "./FormInstitution";
 import React from "react";
+import { message } from "antd";
 
 export type DataProps = {
   nome: string;
@@ -52,11 +53,15 @@ export default function Register() {
   async function validate() {
     if (selectedOption === "option1") {
       if (!data.nome || !data.email || !data.senha) {
-        alert("Preencha os dados corretamente!");
+        message.warning({
+          content: 'Preencha os dados corretamente!',
+        });
         return;
       }
     } else if (!data.nome || !data.cnpj || (!data.email && !data.senha)) {
-      alert("Preencha os dados corretamente!");
+      message.warning({
+        content: 'Preencha os dados corretamente!',
+      });
       return;
     }
 
@@ -73,9 +78,16 @@ export default function Register() {
     let res = await api.create({ body: dataCopy });
     
     if (res.statusCode) {
-      alert("Falha no Cadastro");
+      message.error({
+        content: 'Falha no cadastro',
+        style: {
+          color: 'red'
+        }
+      });
     } else {
-      alert("Cadastrado com Sucesso!");
+      message.success({
+        content: 'Cadastro realizado com sucesso!',
+      });
       navigate("/login");
     }
   }

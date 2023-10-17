@@ -85,6 +85,15 @@ export class AnimalService {
   }
 
   async listAllByUser(userId: string) {
+    const institution: any = this.prisma.user.findFirst({
+      where: { id: userId },
+    });
+    if (!institution) {
+      throw new HttpException(
+        "Falha ao carregar animais",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
     const result: any = await this.prisma.animal.findMany({
       where: {
         user_id: userId,
@@ -119,7 +128,8 @@ export class AnimalService {
           }
         }
       }
-      delete animal.interesse;
+      if (institution.tipo_usuario === "1") delete animal.interesse;
+
       if (animal.user.foto) {
         animal.user.foto =
           "data:image/png;base64," +
@@ -211,6 +221,15 @@ export class AnimalService {
     }
 
     return { lines, result };
+  }
+
+  async adotarAnimal(animalId: string) {
+    return await this.prisma.animal.update({
+      data: { adotado: true },
+      where: {
+        id: animalId,
+      },
+    });
   }
 
   async remove(id: string) {
