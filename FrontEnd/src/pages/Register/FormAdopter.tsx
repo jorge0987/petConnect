@@ -20,7 +20,7 @@ export default function FormAdopter(props: FormAdopterProps) {
       </div>
       <section className="h-full w-full overflow-auto scroll-red-300">
         <div className="w-full flex justify-between">
-          <Label name='Nome' width="w-[48%]">
+          <Label name='Nome' width="w-[48%]" required>
             <input type="text" value={props.data.nome} onChange={(e) => {
               props.data.nome = e.target.value
               updateData()
@@ -40,19 +40,19 @@ export default function FormAdopter(props: FormAdopterProps) {
             updateData()
           }} />
         </Label>
-        <Label name='Contato' width="w-[48%]">
+        <Label name='Contato' width="w-[48%]" required>
           <input type="text" value={props.data.contato} onChange={(e) => {
             props.data.contato = e.target.value
             updateData()
           }} />
         </Label>
-        <Label name='E-mail' width="w-[48%]">
+        <Label name='E-mail' width="w-[48%]" required>
           <input type="e-mail" value={props.data.email} onChange={(e) => {
             props.data.email = e.target.value
             updateData()
           }} />
         </Label>
-        <Label name='Senha' width="w-[48%]">
+        <Label name='Senha' width="w-[48%]" required>
           <input type="password" value={props.data.senha} onChange={(e) => {
             props.data.senha = e.target.value
             updateData()

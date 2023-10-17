@@ -52,15 +52,15 @@ export default function Register() {
 
   async function validate() {
     if (selectedOption === "option1") {
-      if (!data.nome || !data.email || !data.senha) {
+      if (!data.nome || !data.email || !data.senha || data.contato) {
         message.warning({
-          content: 'Preencha os dados corretamente!',
+          content: 'Preencha os dados obrigatórios!',
         });
         return;
       }
-    } else if (!data.nome || !data.cnpj || (!data.email && !data.senha)) {
+    } else if (!data.nome || !data.cnpj || data.contato || (!data.email && !data.senha)) {
       message.warning({
-        content: 'Preencha os dados corretamente!',
+        content: 'Preencha os dados obrigatórios!',
       });
       return;
     }
@@ -141,7 +141,7 @@ export default function Register() {
         <div className="w-full flex items-end pt-1 justify-end border-t-2 border-secondary">
           <Button
             text="Voltar"
-            className="mr-2"
+            className="mr-2 bg-gray-400"
             handle={activeForm ? closeForm : () => navigate("/login")}
           />
           <Button

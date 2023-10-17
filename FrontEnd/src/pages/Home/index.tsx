@@ -63,6 +63,15 @@ function Home() {
   }
 
   async function register() {
+    if (!data.sexo || !data.tamanho || !data.especie) {
+      message.error({
+        content: 'Preencha os dados obrigatório do animal',
+        style: {
+          color: 'red'
+        }
+      }); 
+      return;
+    }
     if (!data.fotos.length) {
       message.error({
         content: 'Adicione pelo menos uma foto ao animal',
@@ -304,7 +313,7 @@ function Home() {
                 }`}
               >
                 <div className="w-full flex justify-between">
-                  <Label name="Espécie do animal" width="w-[48%]">
+                  <Label name="Espécie do animal" width="w-[48%]" required>
                     <input
                       type="text"
                       value={data.especie}
@@ -313,7 +322,7 @@ function Home() {
                       }}
                     />
                   </Label>
-                  <Label name="Raça" width="w-[48%]">
+                  <Label name="Raça" width="w-[48%]" required>
                     <input
                       type="text"
                       value={data.raca}
@@ -333,7 +342,7 @@ function Home() {
                       }}
                     />
                   </Label>
-                  <Label name="Tamanho" width="w-[48%]">
+                  <Label name="Tamanho" width="w-[48%]" required>
                     <input
                       type="text"
                       value={data.tamanho}
@@ -530,7 +539,7 @@ function Home() {
                           }
                           </div>
                           <div className="flex">
-                            <Button
+                            {/* <Button
                               text="Editar"
                               handle={() => {
                                 setData({ ...animal });
@@ -542,7 +551,7 @@ function Home() {
                               text="Remover"
                               handle={() => {}}
                               className={`w-24 bg-[#E74747]`}
-                            />
+                            /> */}
                           </div>
                         </div>
                         {animal.interessados &&

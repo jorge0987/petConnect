@@ -30,22 +30,21 @@ export default function FormInstituicao(props: FormAdopterProps) {
 
           <div className="w-[200px]">
             <Avatar img={props.data.foto || ''} setImg={setImg} disabled />
-
           </div>
           <div className="w-[80%] flex flex-col justify-between">
-            <Label name='Nome' width="w-full">
+            <Label name='Nome' width="w-full" required>
               <input type="text" value={props.data.nome} onChange={(e) => {
                 props.data.nome = e.target.value
                 updateData()
               }} />
             </Label>
-            <Label name='CNPJ' width="w-full">
+            <Label name='CNPJ' width="w-full" required>
               <input type="text" value={props.data.cnpj} onChange={(e) => {
                 props.data.cnpj = e.target.value
                 updateData()
               }} />
             </Label>
-            <Label name='Contato' width="w-full">
+            <Label name='Contato' width="w-full" required>
               <input type="text" value={props.data.contato} onChange={(e) => {
                 props.data.contato = e.target.value
                 updateData()
@@ -53,13 +52,13 @@ export default function FormInstituicao(props: FormAdopterProps) {
             </Label>
           </div>
         </div>
-        <Label name='E-mail' width="w-[48%]">
+        <Label name='E-mail' width="w-[48%]" required>
           <input type="e-mail" value={props.data.email} onChange={(e) => {
             props.data.email = e.target.value
             updateData()
           }} />
         </Label>
-        <Label name='Senha' width="w-[48%]">
+        <Label name='Senha' width="w-[48%]" required>
           <input type="password" value={props.data.senha} onChange={(e) => {
             props.data.senha = e.target.value
             updateData()
