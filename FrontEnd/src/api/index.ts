@@ -12,7 +12,7 @@ interface IndexProps {
 }
 class Api {
   async create(props: CreateProps) {
-    return await fetch("http://localhost:3334/user", {
+    return await fetch(`http://34.225.11.105:3334/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +25,7 @@ class Api {
   }
 
   async register(props: RegisterProps) {
-    return await fetch("http://localhost:3334/" + props.params, {
+    return await fetch(`http://34.225.11.105:3334/` + props.params, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ class Api {
   async show() {}
 
   async index(props: IndexProps,  userId?: boolean) {
-    return await fetch("http://localhost:3334/" + `${props.params}${userId ? '/feed/' + localStorage.getItem('userId') : ''}?skip=${props.skip || 0}&take=${props.take ||  4}`, {
+    return await fetch(`http://34.225.11.105:3334` + `${props.params}${userId ? '/feed/' + localStorage.getItem('userId') : ''}?skip=${props.skip || 0}&take=${props.take ||  4}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +58,7 @@ class Api {
   async delete() {}
   
   async getAnimalsByInstitution() {
-    return await fetch(`http://localhost:3334/animal/user/${localStorage.getItem('userId')}`, {
+    return await fetch(`http://34.225.11.105:3334/animal/user/${localStorage.getItem('userId')}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +71,7 @@ class Api {
   }
 
   async adotarAnimal(animalId: string) {
-    return await fetch(`http://localhost:3334/animal/adotar/${animalId}`, {
+    return await fetch(`http://34.225.11.105:3334/animal/adotar/${animalId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ class Api {
   }
 
   async listInteresseByAnimal(animalId: string) {
-    return await fetch(`http://localhost:3334/user/interesse/list/${animalId}`, {
+    return await fetch(`http://34.225.11.105:3334/user/interesse/list/${animalId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +97,7 @@ class Api {
   }
 
   async addInteresse(animalId: string) {
-    return await fetch(`http://localhost:3334/user/interesse/${localStorage.getItem('userId')}/${animalId}`, {
+    return await fetch(`http://34.225.11.105:3334/user/interesse/${localStorage.getItem('userId')}/${animalId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

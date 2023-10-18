@@ -16,7 +16,7 @@ function Login() {
         }
       });
     } else {
-      fetch(`http://localhost:3334/login`, {
+      fetch(`http://34.225.11.105:3334/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

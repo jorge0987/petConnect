@@ -14,7 +14,7 @@ export default function Menu() {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:3334/home`, {
+    fetch(`http://34.225.11.105:3334/home`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
