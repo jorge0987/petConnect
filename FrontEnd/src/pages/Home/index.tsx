@@ -285,7 +285,7 @@ function Home() {
                       }`}
                       handle={() => addInteresse(animal)}
                       className={`w-60 ${
-                        animal.interesseActive ? "bg-gray-200" : "bg-[#53740E]"
+                        animal.interesseActive ? "bg-gray-400" : "bg-[#53740E]"
                       }`}
                     />
                   </div>

@@ -43,7 +43,7 @@ class Api {
   async show() {}
 
   async index(props: IndexProps,  userId?: boolean) {
-    return await fetch(`http://34.225.11.105:3334` + `${props.params}${userId ? '/feed/' + localStorage.getItem('userId') : ''}?skip=${props.skip || 0}&take=${props.take ||  4}`, {
+    return await fetch(`http://34.225.11.105:3334/` + `${props.params}${userId ? '/feed/' + localStorage.getItem('userId') : ''}?skip=${props.skip || 0}&take=${props.take ||  4}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

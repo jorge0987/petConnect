@@ -52,7 +52,7 @@ export default function Register() {
 
   async function validate() {
     if (selectedOption === "option1") {
-      if (!data.nome || !data.email || !data.senha || data.contato) {
+      if (!data.nome || !data.email || !data.senha || !data.contato) {
         message.warning({
           content: 'Preencha os dados obrigatórios!',
         });
