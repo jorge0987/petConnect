@@ -6,6 +6,8 @@ import Button from "../../components/Button";
 import { UilPlus, UilPentagon } from "@iconscout/react-unicons";
 import Label from "../../components/Label";
 import { message } from "antd";
+import wellcome from '../../assets/wellcome.svg'
+import empty from '../../assets/empty.svg'
 
 type AnimalProps = {
   especie: string;
@@ -203,8 +205,8 @@ function Home() {
     <PageTemplate>
       {(typeUser === "1" && (
         <div className="w-full flex justify-center pt-10 bg-background">
-          <section className="w-[60%] bg-gray-200 flex flex-col pt-10 px-10">
-            {posts.map((animal: any, index: number) => {
+          <section className={`w-[60%] flex flex-col pt-10 px-10 ${posts.length ? 'bg-gray-200' : ''}`}>
+            {posts.length > 0 && posts.map((animal: any, index: number) => {
               return (
                 <div
                   key={index}
@@ -291,24 +293,34 @@ function Home() {
                   </div>
                 </div>
               );
-            })}
+            }) ||
+              <div className="w-full h-full flex flex-col justify-center items-center">
+                <img src={wellcome} alt="" />
+                <p className="my-4 text-secondary text-2xl">
+                  No momento não há nenhum animal disponível no sistema!
+                </p>
+              </div>
+            }
           </section>
         </div>
       )) || (
         <div>
-          <div className="w-full px-32 pt-4">
-            <div className="w-1/3 border-b-[2px] pb-1 my-10 border-secondary pr-3">
-              <h2 className="text-2xl">
-                {enableForm
-                  ? "Cadastro de Animal"
-                  : "Seus animais ja cadastrados"}
-              </h2>
+          {
+            ((posts.length > 0) || enableForm) &&
+            <div className="w-full px-32 pt-4">
+              <div className="w-1/3 border-b-[2px] pb-1 my-10 border-secondary pr-3">
+                <h2 className="text-2xl">
+                  {enableForm
+                    ? "Cadastro de Animal"
+                    : "Seus animais ja cadastrados"}
+                </h2>
+              </div>
             </div>
-          </div>
+          }
           {(enableForm && (
             <div>
               <section
-                className={`h-full w-full px-32 pb-20 ${
+                className={`h-full w-full px-32 pb-10 ${
                   enableForm ? "bg-background" : ""
                 }`}
               >
@@ -322,7 +334,7 @@ function Home() {
                       }}
                     />
                   </Label>
-                  <Label name="Raça" width="w-[48%]" required>
+                  <Label name="Raça" width="w-[48%]">
                     <input
                       type="text"
                       value={data.raca}
@@ -352,7 +364,7 @@ function Home() {
                     />
                   </Label>
                 </div>
-                <Label name="Sexo" width="w-[48%]">
+                <Label name="Sexo" width="w-[48%]" required>
                   <input
                     type="text"
                     value={data.sexo}
@@ -439,8 +451,8 @@ function Home() {
               </section>
             </div>
           )) || (
-            <div className="w-full flex flex-col items-center justify-center pt-10 bg-background">
-              <section className="w-[60%] bg-gray-200 flex flex-col pt-10 px-10">
+            <div className={`w-full flex flex-col items-center justify-center ${posts.length ? 'bg-background' : ''}`}>
+              <section className={`w-[60%] flex flex-col pt-10 px-10 ${posts.length ? 'bg-gray-200' : ''}`}>
                 {posts.length > 0 &&
                   posts.map((animal: any, index: number) => {
                     return (
@@ -577,7 +589,13 @@ function Home() {
                           )}
                       </div>
                     );
-                  })}
+                  })
+                    || 
+                  <div className="w-full flex flex-col items-center justify-center mb-4 pt-5">
+                    <img src={empty} className="w-[60%]"/>
+                    <p className="my-4 text-secondary text-2xl">Ainda não hà animais cadastrados no sistema!</p>
+                  </div>
+                }
               </section>
             </div>
           )}

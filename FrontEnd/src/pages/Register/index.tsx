@@ -58,7 +58,7 @@ export default function Register() {
         });
         return;
       }
-    } else if (!data.nome || !data.cnpj || data.contato || (!data.email && !data.senha)) {
+    } else if (!data.nome || !data.cnpj || !data.contato || (!data.email && !data.senha)) {
       message.warning({
         content: 'Preencha os dados obrigatórios!',
       });
@@ -85,6 +85,7 @@ export default function Register() {
         }
       });
     } else {
+      setData({ ...emptyData });
       message.success({
         content: 'Cadastro realizado com sucesso!',
       });
